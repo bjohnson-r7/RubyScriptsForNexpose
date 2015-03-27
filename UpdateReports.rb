@@ -63,7 +63,7 @@ if password == ''
 end
 
 if template_name == ''
-  print "Template Name: "
+  puts "Template Name: "
   template_name=gets.chomp
 end
 
