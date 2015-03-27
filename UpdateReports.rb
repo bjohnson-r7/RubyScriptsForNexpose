@@ -77,17 +77,17 @@ temp_reports = nsc.reports.select { |r| r.template_id == temp_id }
 temp_reports.each do |r|  
   report_config = Nexpose::ReportConfig.load(nsc, r.config_id)
     report_config.filters.each do |o|
-	  old_report_type.push(o.type)
-	  old_report_id.push(o.id)
-	  hash = { old_report_type => old_report_id } 
+      old_report_type.push(o.type)
+      old_report_id.push(o.id)
+      hash = { old_report_type => old_report_id } 
       report_config.filters = [] 
       report_config.add_filter('version', '1.4.0')
       report_config.add_filter('query', query)	
       hash.each do|x, y|
         x.zip(y).each do | site_name, site_id |
         report_config.add_filter(site_name, site_id.to_i)
-	    end  
-	  end	
+	end  
+      end	
     end
   report_config.format = 'sql'  
   report_config.save(nsc, generate_now = false)
