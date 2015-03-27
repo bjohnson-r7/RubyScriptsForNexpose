@@ -2,7 +2,7 @@
 One of my favorite clients has about 200 reports that they want to change so they use a sql query export
 instead of the template they are currently configured to use.  Initially our idea was to give users the
 ability to save a sql query export as a report template, but I ended up writing this instead.  This script
-is designed to prompt the end user for a repor template name, find any reports that use that template, and 
+is designed to prompt the end user for a report template name, find any reports that use that template, and 
 update the reports to use the sql query that they define in the script (while preserving the other report
 configuration settings).
 =end
