@@ -1,9 +1,6 @@
 =begin
-One of my favorite clients has about 200 reports that they want to change so they use a sql query export
-instead of the template they are currently configured to use.  Initially our idea was to give users the
-ability to save a sql query export as a report template, but I ended up writing this instead.  This script
-is designed to prompt the end user for a report template name, find any reports that use that template, and 
-update the reports to use the sql query that they define in the script (while preserving the other report
+This script is designed to prompt the end user for a report template name, find any reports that use that template,
+and update the reports to use the sql query that they define in the script (while preserving the other report
 configuration settings).
 =end
 
@@ -77,19 +74,23 @@ temp_id = template.id
 temp_reports = nsc.reports.select { |r| r.template_id == temp_id }  
 temp_reports.each do |r|  
   report_config = Nexpose::ReportConfig.load(nsc, r.config_id)
-    report_config.filters.each do |o|
-      old_report_type.push(o.type)
-      old_report_id.push(o.id)
-      hash = { old_report_type => old_report_id } 
-      report_config.filters = [] 
-      report_config.add_filter('version', '1.4.0')
-      report_config.add_filter('query', query)	
-      hash.each do|x, y|
-        x.zip(y).each do | site_name, site_id |
-        report_config.add_filter(site_name, site_id.to_i)
-	end  
-      end	
-    end
+  temp_filters = []
+  report_config.filters.each do |o|
+    old_report_type.push(o.type)
+    old_report_id.push(o.id)
+    hash = { old_report_type => old_report_id } 
+    temp_filters << hash
+  end
+  report_config.filters = [] 
+  report_config.add_filter('version', '1.4.0')
+  report_config.add_filter('query', query)
+  temp_filters.each do |hash|	
+    hash.each do|x, y|
+      x.zip(y).each do | site_name, site_id |
+        report_config.add_filter(site_name, site_id.to_i) if site_name =~ /scan|site|tag|group|asset|device/
+      end
+	end
+  end	
   report_config.format = 'sql'  
   report_config.save(nsc, generate_now = false)
 end
