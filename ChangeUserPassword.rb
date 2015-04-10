@@ -7,10 +7,10 @@ include Nexpose
 
 # If these entries are set this script will not prompt the user for input
 
-nexposehost='10.2.39.224'
+nexposehost=''
 nexposeport='3780'
-nexposeuser='nxadmin'
-nexposepassword='nxadmin'
+nexposeuser=''
+nexposepassword=''
 userid = ''
 userpassword = ''
 
