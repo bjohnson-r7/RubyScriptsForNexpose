@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# use this to bulk create engines in the UI from a csv file
+# each row should in the csv should have the engine name in
+# the first column and IP Address in the second column.
+
+require 'nexpose'
+require 'csv'
+
+include Nexpose
+
+host='192.168.0.1'
+port='3780'
+user='nxadmin'
+password='nxpassword'
+eport='40814'
+eaddress = ''
+ename = ''
+
+nsc = Nexpose::Connection.new(host, user, password, port)
+nsc.login
+at_exit { nsc.logout }
+
+CSV.foreach(File.path("engines.csv")) do |col|
+	ename << col[0] 
+	eaddress << col[1]
+	engine = Engine.new(eaddress, ename, eport)
+	engine.save(nsc)
+	eaddress=''
+	ename=''
+end
+
+puts ''
+puts 'All done!'
